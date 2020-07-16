@@ -1,0 +1,9 @@
+/**
+ * The pvCard-date class is now acting as a container for the day and time, so
+ * it needs to push its content to either horizontal sides of the card.
+ */
+.pvCard-date {
+    display: flex !important;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}

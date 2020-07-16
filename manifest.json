@@ -1,0 +1,11 @@
+{
+  "name": "CLC Experience Reformat",
+  "version": "0.1.0",
+  "description": "Formats CLC experiences properly",
+  "content_scripts": [{
+    "js": ["main.js"],
+    "css": ["style.css"],
+    "matches": ["http://www.canadalearningcode.ca/experiences/"]
+  }],
+  "manifest_version": 2
+}
