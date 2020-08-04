@@ -43,11 +43,11 @@ function reformatCard(cardEl) {
 
   // Extract the information from the elements
   const [startDateString, endDateString] = dateEl.innerText.split('•').map(s => s.trim());
-  const locationKeyWord = extractTimeZone(locationEl.innerText);
+  const tzOffset = extractTimeZone(locationEl.innerText);
 
   // Parse the time into JavaScript Date objects
-  const startDate = parseDate(startDateString, locationKeyWord);
-  const endDate = parseDate(endDateString, locationKeyWord);
+  const startDate = parseDate(startDateString, tzOffset);
+  const endDate = parseDate(endDateString, tzOffset);
 
   // Build the new date element
   const newDateEl = createDateElement(startDate, endDate);
@@ -71,12 +71,10 @@ function reformatCard(cardEl) {
  *
  * @return A Date object corresponding to the date string and timezone
  */
-function parseDate(dateString, tzKey) {
-  const tz = TIME_ZONES[tzKey.toLowerCase()];
-
+function parseDate(dateString, tzOffset) {
   // For JavaScript to be able to parse the date, the period (AM/PM) needs to
   // be hacked off the end, and the timezone offset needs to be included.
-  const dateStringWithTz = `${dateString.substring(0, dateString.length-2)} ${tz}`;
+  const dateStringWithTz = `${dateString.substring(0, dateString.length-2)} ${tzOffset}`;
   const date = new Date(dateStringWithTz);
 
   // Since we got rid of the period earlier, we'll need to account for it
@@ -169,16 +167,16 @@ function formatTime(date, options) {
 /**
  * Extracts the timezone from a string
  *
- * The string must have "KEYWORD somegarbageword time" (case insensitive)
- * somewhere in it.
+ * The string must have a valid timezone keyword somewhere in it.
  *
  * @param locationString The string to extract from
  *
- * @return The time keyword from the string
+ * @return The timezone offset extrapolated from the string
  */
 function extractTimeZone(locationString) {
-  const locationKeyWord = locationString.match(/(\S+) \S+ time/i)[1];
-  return locationKeyWord;
+  const haystack = locationString.toLowerCase();
+  const [ _, offset ] = Object.entries(TIME_ZONES).find(([keyword, offset]) => haystack.includes(keyword));
+  return offset;
 }
 
 /**
